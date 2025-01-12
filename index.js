@@ -18,10 +18,17 @@ const calcNewDistance = initialDistanceKm + (velocityKmH*(timeInSeconds/3600)); 
 const calcRemainingFuelKg = initialFuelKg - (fuelBurnRateKgs * timeInSeconds); //calculates remaining fuel
 const currentVelocityKmH = velocityKmH + (accelerationKmH2 * (timeInSeconds / 3600)) //calculates new velocity based on acceleration
 
-// Pick up an error with how the function below is called and make it robust to such errors
-calcNewVel = (vel, acc, time) => { 
-  return vel + (acc*time)
-}
+// Calculate new velocity based on acceleration and time
+const calculateNewVelocity = (initialVelocityKmH, accelerationMS2, timeSeconds) => {
+  if (initialVelocityKmH == null || accelerationMS2 == null || timeSeconds == null) {
+    throw new Error('calculateNewVelocity: received null pointer');
+  }
+  
+  const timeHours = timeSeconds / 3600; // Convert time from seconds to hours
+  const accelerationKmH2 = accelerationMS2 * 3.6; // Convert acceleration from m/s² to km/h²
+
+  return initialVelocityKmH + (accelerationKmH2 * timeHours);
+};
 
 console.log(`Corrected New Velocity: ${vel2} km/h`);
 console.log(`Corrected New Distance: ${d2} km`);
