@@ -6,12 +6,15 @@
  */
 
 // Given Parameters
-const vel = 10000; // velocity (km/h)
-const acc = 3; // acceleration (m/s^2)
-const time = 3600; // seconds (1 hour)
-const d = 0; // distance (km)
-const fuel = 5000; // remaining fuel (kg)
-const fbr = 0.5; // fuel burn rate (kg/s)
+const velocityKmH = 10000; // velocity (km/h)
+const accelerationMs2 = 3; // acceleration (m/s^2)
+const timeInSeconds = 3600; // seconds (1 hour)
+const initialDistanceKm = 0; // distance (km)
+const initialFuelKg = 5000; // remaining fuel (kg)
+const fuelBurnRateKgs = 0.5; // fuel burn rate (kg/s)
+
+// Convert acceleration from m/s^2 to km/h^2
+const accelerationKmH2 = accelerationMs2 * 12960; // 1 m/s^2 = 12960 km/h^2
 
 
 const calcNewDistance = initialDistanceKm + (velocityKmH*(timeInSeconds/3600)); //calcultes new distance
@@ -19,23 +22,24 @@ const calcRemainingFuelKg = initialFuelKg - (fuelBurnRateKgs * timeInSeconds); /
 const currentVelocityKmH = velocityKmH + (accelerationKmH2 * (timeInSeconds / 3600)) //calculates new velocity based on acceleration
 
 // Calculate new velocity based on acceleration and time
-const calculateNewVelocity = (initialVelocityKmH, accelerationMS2, timeSeconds) => {
-  if (initialVelocityKmH == null || accelerationMS2 == null || timeSeconds == null) {
-    throw new Error('calculateNewVelocity: received null pointer');
+function calcNewVelocityKmH(velocityKmH, accelerationMs2, timeInSeconds){
+  // check if the parameters are not negative
+  if(velocityKmH < 0 || accelerationMs2 < 0 || timeInSeconds < 0){
+    throw new Error('Parameters cannot be negative')
   }
-  
-  const timeHours = timeSeconds / 3600; // Convert time from seconds to hours
-  const accelerationKmH2 = accelerationMS2 * 3.6; // Convert acceleration from m/s² to km/h²
 
-  return initialVelocityKmH + (accelerationKmH2 * timeHours);
-};
+    // convert acceleration from m/s^2 to km/h^2
+  const accelerationKmH2 = accelerationMs2 * 12960; // 1 m/s^2 = 12960 km/h^2
+  const timeInHours = timeInSeconds / 3600
+  return velocityKmH + (accelerationKmH2 * timeInHours)
+}
 
-console.log(`Corrected New Velocity: ${vel2} km/h`);
-console.log(`Corrected New Distance: ${d2} km`);
-console.log(`Corrected Remaining Fuel: ${rf} kg`);
-
-
-
-
-
+try {
+  const currentVelocityKmH = calcNewVelocityKmH(velocityKmH, accelerationMs2, timeInSeconds)
+  console.log(`Corrected New Velocity: ${currentVelocityKmH} km/h`);
+  console.log(`Corrected New Distance: ${calcNewDistance} km`);
+  console.log(`Corrected Remaining Fuel: ${calcRemainingFuelKg} kg`);
+} catch (error) {
+  console.log(error.message)
+}
 
